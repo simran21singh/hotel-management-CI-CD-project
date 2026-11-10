@@ -148,9 +148,9 @@ pipeline {
                     echo 'Deploying application stack with Docker Compose...'
                     // Do NOT pass -v flag to preserve named volume 'mysql_data'
                     if (isUnix()) {
-                        sh 'docker-compose up --build -d'
+                        sh 'docker-compose -p hotel-management up --build -d'
                     } else {
-                        bat 'docker-compose up --build -d'
+                        bat 'docker-compose -p hotel-management up --build -d'
                     }
                 }
                 echo 'Containers deployed in detached background mode.'

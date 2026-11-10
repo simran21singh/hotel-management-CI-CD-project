@@ -116,9 +116,9 @@ pipeline {
                 script {
                     echo 'Deploying application stack with Docker Compose...'
                     if (isUnix()) {
-                        sh 'docker-compose up --build -d'
+                        sh 'docker-compose -p hotel-management up --build -d'
                     } else {
-                        bat 'docker-compose up --build -d'
+                        bat 'docker-compose -p hotel-management up --build -d'
                     }
                 }
                 echo 'Containers deployed in detached background mode.'
