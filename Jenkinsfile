@@ -53,9 +53,9 @@ pipeline {
                 echo '=================================================='
                 script {
                     if (isUnix()) {
-                        sh './mvnw clean compile'
+                        sh 'mvn clean compile'
                     } else {
-                        bat '.\\mvnw.cmd clean compile'
+                        bat 'mvn clean compile'
                     }
                 }
                 echo 'Compilation completed successfully.'
@@ -73,9 +73,9 @@ pipeline {
                 script {
                     try {
                         if (isUnix()) {
-                            sh './mvnw test'
+                            sh 'mvn test'
                         } else {
-                            bat '.\\mvnw.cmd test'
+                            bat 'mvn test'
                         }
                     } catch (err) {
                         echo "[ERROR] Automated tests failed! Halting pipeline to prevent faulty deployment."
@@ -102,9 +102,9 @@ pipeline {
                 script {
                     // Tests already verified in Stage 3, skip to optimize package step
                     if (isUnix()) {
-                        sh './mvnw package -DskipTests'
+                        sh 'mvn package -DskipTests'
                     } else {
-                        bat '.\\mvnw.cmd package -DskipTests'
+                        bat 'mvn package -DskipTests'
                     }
                 }
                 // Archive the generated JAR artifact in Jenkins
