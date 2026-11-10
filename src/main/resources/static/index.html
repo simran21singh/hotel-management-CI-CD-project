@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Horizon Hotel - DevOps Management Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">🏨</div>
+            <div class="brand-text">
+                <h1>Grand Horizon</h1>
+                <span>DevOps Suite</span>
+            </div>
+        </div>
+
+        <ul class="nav-links">
+            <li class="nav-item active" data-view="dashboard">
+                <a href="#dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item" data-view="rooms">
+                <a href="#rooms">
+                    <span class="nav-icon">🛏️</span>
+                    <span>Rooms</span>
+                </a>
+            </li>
+            <li class="nav-item" data-view="bookings">
+                <a href="#bookings">
+                    <span class="nav-icon">📋</span>
+                    <span>Bookings</span>
+                </a>
+            </li>
+            <li class="nav-item" data-view="new-booking">
+                <a href="#new-booking">
+                    <span class="nav-icon">➕</span>
+                    <span>New Reservation</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <p><strong>CI/CD Demo v1.0.0</strong></p>
+            <p style="margin-top:4px;">Spring Boot & MySQL</p>
+        </div>
+    </aside>
+
+    <!-- Main Application Shell -->
+    <div class="main-wrapper">
+        <!-- Top Navigation Bar -->
+        <header class="top-navbar">
+            <div class="header-left">
+                <button class="menu-toggle-btn" id="menu-toggle" aria-label="Toggle Navigation">&#9776;</button>
+                <h2 class="page-title" id="current-page-title">Dashboard Overview</h2>
+            </div>
+            <div class="header-right">
+                <div class="system-badge" id="system-status-badge">
+                    <span class="status-dot"></span> Checking API...
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="content-area">
+
+            <!-- ================= VIEW 1: DASHBOARD ================= -->
+            <section id="view-dashboard" class="view-section active">
+                <!-- Metrics Grid -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon-wrapper blue">🛏️</div>
+                        <div class="metric-info">
+                            <h3 id="metric-total-rooms">0</h3>
+                            <p>Total Rooms</p>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon-wrapper green">✓</div>
+                        <div class="metric-info">
+                            <h3 id="metric-available-rooms">0</h3>
+                            <p>Available Rooms</p>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon-wrapper red">✕</div>
+                        <div class="metric-info">
+                            <h3 id="metric-occupied-rooms">0</h3>
+                            <p>Occupied Rooms</p>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon-wrapper amber">📋</div>
+                        <div class="metric-info">
+                            <h3 id="metric-total-bookings">0</h3>
+                            <p>Total Bookings</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Bookings Panel -->
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Recent Reservations</h3>
+                        <div class="panel-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="switchView('bookings')">View All Bookings &rarr;</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Guest</th>
+                                    <th>Room</th>
+                                    <th>Stay Dates</th>
+                                    <th>Total Price</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-bookings-tbody">
+                                <tr>
+                                    <td colspan="6" class="empty-state">
+                                        <div class="loading-spinner"></div>
+                                        <p style="margin-top:10px;">Loading dashboard metrics...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW 2: ROOMS ================= -->
+            <section id="view-rooms" class="view-section">
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Hotel Rooms Inventory</h3>
+                        <div class="panel-actions">
+                            <select id="room-status-filter" class="select-filter">
+                                <option value="all">All Rooms</option>
+                                <option value="available">Available Only</option>
+                                <option value="occupied">Occupied Only</option>
+                            </select>
+                            <button class="btn btn-primary" id="open-add-room-btn">➕ Add Room</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Room Number</th>
+                                    <th>Type</th>
+                                    <th>Price / Night</th>
+                                    <th>Status</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rooms-table-tbody">
+                                <!-- Populated dynamically by app.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW 3: BOOKINGS ================= -->
+            <section id="view-bookings" class="view-section">
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Guest Reservations</h3>
+                        <div class="panel-actions">
+                            <select id="booking-status-filter" class="select-filter">
+                                <option value="all">All Statuses</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="switchView('new-booking')">➕ New Reservation</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Guest Info</th>
+                                    <th>Room Details</th>
+                                    <th>Dates</th>
+                                    <th>Total Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookings-table-tbody">
+                                <!-- Populated dynamically by app.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW 4: NEW RESERVATION ================= -->
+            <section id="view-new-booking" class="view-section">
+                <div class="panel-card" style="max-width: 800px; margin: 0 auto;">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Book a Room for Guest</h3>
+                    </div>
+                    <form id="new-booking-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="booking-guest-name">Guest Full Name *</label>
+                                <input type="text" id="booking-guest-name" class="form-control" placeholder="e.g. John Doe" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="booking-guest-email">Guest Email Address *</label>
+                                <input type="email" id="booking-guest-email" class="form-control" placeholder="e.g. john@example.com" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="booking-guest-phone">Guest Phone Number *</label>
+                                <input type="tel" id="booking-guest-phone" class="form-control" placeholder="e.g. +1 555-0199" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="booking-room-select">Select Available Room *</label>
+                                <select id="booking-room-select" class="form-control" required>
+                                    <option value="">-- Choose an Available Room --</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="booking-checkin">Check-in Date *</label>
+                                <input type="date" id="booking-checkin" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="booking-checkout">Check-out Date *</label>
+                                <input type="date" id="booking-checkout" class="form-control" required>
+                            </div>
+
+                            <div class="form-group full-width" style="background:#f8fafc; padding:16px; border-radius:var(--radius-sm); border:1px solid var(--surface-border);">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span style="font-size:14px; color:var(--text-secondary); font-weight:600;">Estimated Total Cost:</span>
+                                    <strong id="estimated-total-price" style="font-size:20px; color:var(--accent);">$0.00</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-footer">
+                            <button type="button" class="btn btn-secondary" onclick="switchView('bookings')">Cancel</button>
+                            <button type="submit" id="booking-submit-btn" class="btn btn-primary">Confirm & Create Reservation</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ================= ADD / EDIT ROOM MODAL ================= -->
+    <div class="modal-overlay" id="room-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="room-modal-title">Add New Room</h3>
+                <button class="modal-close-btn modal-close-trigger">&times;</button>
+            </div>
+            <form id="room-form">
+                <input type="hidden" id="room-id-hidden">
+                <div class="form-grid" style="grid-template-columns: 1fr;">
+                    <div class="form-group">
+                        <label for="room-number">Room Number *</label>
+                        <input type="text" id="room-number" class="form-control" placeholder="e.g. 101, 204B" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="room-type">Room Type *</label>
+                        <select id="room-type" class="form-control" required>
+                            <option value="Single Standard">Single Standard</option>
+                            <option value="Double Standard">Double Standard</option>
+                            <option value="Deluxe King">Deluxe King</option>
+                            <option value="Executive Suite">Executive Suite</option>
+                            <option value="Presidential Suite">Presidential Suite</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="room-price">Price per Night ($) *</label>
+                        <input type="number" id="room-price" class="form-control" min="1" step="0.01" placeholder="e.g. 129.99" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                            <input type="checkbox" id="room-available" checked>
+                            <span>Mark room as Available</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="room-description">Description / Amenities</label>
+                        <textarea id="room-description" class="form-control" rows="3" placeholder="e.g. King-size bed, balcony with ocean view, mini-bar."></textarea>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button type="button" class="btn btn-secondary modal-close-trigger">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Room</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

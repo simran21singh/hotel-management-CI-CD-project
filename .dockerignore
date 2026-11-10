@@ -1,0 +1,27 @@
+# Git
+.git
+.gitignore
+
+# Maven build artifacts
+target/
+*.class
+
+# IDE configuration
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.settings/
+.classpath
+.project
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db
+
+# Documentation and CI scripts (not needed inside Docker image build context)
+docs/
+jenkins/
+.mvn/wrapper/maven-wrapper.jar
