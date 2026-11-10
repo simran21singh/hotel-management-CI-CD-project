@@ -6,7 +6,7 @@ pipeline {
         IMAGE_NAME        = 'hotel-management-app'
         APP_PORT          = '8080'
         HEALTH_ENDPOINT   = 'http://localhost:8080/actuator/health'
-        DOCKER_COMPOSE_CMD = 'docker compose'
+        DOCKER_COMPOSE_CMD = 'docker-compose'
     }
 
     options {
@@ -37,9 +37,9 @@ pipeline {
                 echo '=================================================='
                 script {
                     if (isUnix()) {
-                        sh './mvnw clean compile'
+                        sh 'mvn clean compile'
                     } else {
-                        bat '.\\mvnw.cmd clean compile'
+                        bat 'mvn clean compile'
                     }
                 }
                 echo 'Compilation completed successfully.'
@@ -54,9 +54,9 @@ pipeline {
                 script {
                     try {
                         if (isUnix()) {
-                            sh './mvnw test'
+                            sh 'mvn test'
                         } else {
-                            bat '.\\mvnw.cmd test'
+                            bat 'mvn test'
                         }
                     } catch (err) {
                         echo "[ERROR] Automated tests failed! Halting pipeline to prevent faulty deployment."
@@ -78,9 +78,9 @@ pipeline {
                 echo '=================================================='
                 script {
                     if (isUnix()) {
-                        sh './mvnw package -DskipTests'
+                        sh 'mvn package -DskipTests'
                     } else {
-                        bat '.\\mvnw.cmd package -DskipTests'
+                        bat 'mvn package -DskipTests'
                     }
                 }
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
@@ -116,9 +116,9 @@ pipeline {
                 script {
                     echo 'Deploying application stack with Docker Compose...'
                     if (isUnix()) {
-                        sh 'docker compose up --build -d'
+                        sh 'docker-compose up --build -d'
                     } else {
-                        bat 'docker compose up --build -d'
+                        bat 'docker-compose up --build -d'
                     }
                 }
                 echo 'Containers deployed in detached background mode.'

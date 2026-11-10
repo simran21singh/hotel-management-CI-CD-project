@@ -9,7 +9,7 @@ pipeline {
         IMAGE_NAME        = 'hotel-management-app'
         APP_PORT          = '8080'
         HEALTH_ENDPOINT   = 'http://localhost:8080/actuator/health'
-        DOCKER_COMPOSE_CMD = 'docker compose'
+        DOCKER_COMPOSE_CMD = 'docker-compose'
     }
 
     // -------------------------------------------------------------------
@@ -148,9 +148,9 @@ pipeline {
                     echo 'Deploying application stack with Docker Compose...'
                     // Do NOT pass -v flag to preserve named volume 'mysql_data'
                     if (isUnix()) {
-                        sh 'docker compose up --build -d'
+                        sh 'docker-compose up --build -d'
                     } else {
-                        bat 'docker compose up --build -d'
+                        bat 'docker-compose up --build -d'
                     }
                 }
                 echo 'Containers deployed in detached background mode.'
